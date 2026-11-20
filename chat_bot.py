@@ -28,7 +28,7 @@ def search_document(database, query, top_k=5):
     query_embedding_list = embedding.encode(query).tolist()
     query_embedding_str = json.dumps(query_embedding_list)
 
-    curr = db.cursor()
+    curr = database.cursor()
 
     sql_query = f"""
                 SELECT text, vec_cosine_distance(embedding,%s) AS distance
@@ -37,9 +37,9 @@ def search_document(database, query, top_k=5):
                 LIMIT {top_k}
         """
 
-    curr.execute(sql_query, (query_embedding_str))
+    curr.execute(sql_query,(query_embedding_str,))
     search_results = curr.fetchall()
-    db.commit()
+    database.commit()
     curr.close()
     # print(search_results)
     for result in search_results:
